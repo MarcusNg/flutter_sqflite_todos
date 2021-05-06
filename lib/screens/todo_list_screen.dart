@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sqflite_todos/models/todo_model.dart';
+import 'package:flutter_sqflite_todos/screens/add_todo_screen.dart';
 import 'package:flutter_sqflite_todos/services/database_service.dart';
 import 'package:flutter_sqflite_todos/widgets/todo_tile.dart';
 import 'package:flutter_sqflite_todos/widgets/todos_overview.dart';
@@ -46,6 +47,16 @@ class _TodoListScreenState extends State<TodoListScreen> {
             return TodoTile(todo: todo);
           },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (_) => AddTodoScreen(),
+          ),
+        ),
+        child: const Icon(Icons.add),
       ),
     );
   }
