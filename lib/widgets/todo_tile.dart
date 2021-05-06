@@ -1,6 +1,7 @@
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sqflite_todos/models/todo_model.dart';
+import 'package:flutter_sqflite_todos/screens/add_todo_screen.dart';
 import 'package:flutter_sqflite_todos/services/database_service.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_sqflite_todos/extensions/string_extension.dart';
@@ -71,6 +72,16 @@ class TodoTile extends StatelessWidget {
           DatabaseService.instance.update(todo.copyWith(completed: value));
           updateTodos();
         },
+      ),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (_) => AddTodoScreen(
+            updateTodos: updateTodos,
+            todo: todo,
+          ),
+        ),
       ),
     );
   }
