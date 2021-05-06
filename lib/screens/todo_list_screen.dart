@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sqflite_todos/models/todo_model.dart';
 import 'package:flutter_sqflite_todos/services/database_service.dart';
+import 'package:flutter_sqflite_todos/widgets/todo_tile.dart';
 import 'package:flutter_sqflite_todos/widgets/todos_overview.dart';
 
 class TodoListScreen extends StatefulWidget {
@@ -30,11 +31,19 @@ class _TodoListScreenState extends State<TodoListScreen> {
       body: SafeArea(
         child: ListView.separated(
           padding: const EdgeInsets.symmetric(vertical: 32.0),
-          itemCount: 1 + _todos.length,
+          itemCount: 5, // 1 + _todos.length,
           separatorBuilder: (_, __) => const Divider(),
           itemBuilder: (BuildContext context, int index) {
             if (index == 0) return TodosOverview(todos: _todos);
-            return Container();
+            // final todo = _todos[index - 1];
+            final todo = Todo(
+              id: 0,
+              name: 'Eat food',
+              date: DateTime.now(),
+              priorityLevel: PriorityLevel.high,
+              completed: false,
+            );
+            return TodoTile(todo: todo);
           },
         ),
       ),
