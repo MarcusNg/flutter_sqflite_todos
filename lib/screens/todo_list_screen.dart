@@ -32,19 +32,15 @@ class _TodoListScreenState extends State<TodoListScreen> {
       body: SafeArea(
         child: ListView.separated(
           padding: const EdgeInsets.symmetric(vertical: 32.0),
-          itemCount: 5, // 1 + _todos.length,
+          itemCount: 1 + _todos.length,
           separatorBuilder: (_, __) => const Divider(),
           itemBuilder: (BuildContext context, int index) {
             if (index == 0) return TodosOverview(todos: _todos);
-            // final todo = _todos[index - 1];
-            final todo = Todo(
-              id: 0,
-              name: 'Eat food',
-              date: DateTime.now(),
-              priorityLevel: PriorityLevel.high,
-              completed: false,
+            final todo = _todos[index - 1];
+            return TodoTile(
+              updateTodos: _getTodos,
+              todo: todo,
             );
-            return TodoTile(todo: todo);
           },
         ),
       ),
@@ -53,7 +49,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
           context,
           MaterialPageRoute(
             fullscreenDialog: true,
-            builder: (_) => AddTodoScreen(),
+            builder: (_) => AddTodoScreen(updateTodos: _getTodos),
           ),
         ),
         child: const Icon(Icons.add),

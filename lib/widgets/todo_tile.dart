@@ -6,15 +6,20 @@ import 'package:intl/intl.dart';
 import 'package:flutter_sqflite_todos/extensions/string_extension.dart';
 
 class TodoTile extends StatelessWidget {
+  final VoidCallback updateTodos;
   final Todo todo;
 
-  const TodoTile({required this.todo});
+  const TodoTile({
+    required this.updateTodos,
+    required this.todo,
+  });
 
   @override
   Widget build(BuildContext context) {
     final completedTextDecoration =
         !todo.completed ? TextDecoration.none : TextDecoration.lineThrough;
     return ListTile(
+      key: Key(todo.id.toString()),
       title: Text(
         todo.name,
         style: TextStyle(
@@ -64,6 +69,7 @@ class TodoTile extends StatelessWidget {
         activeColor: _getColor(),
         onChanged: (value) {
           DatabaseService.instance.update(todo.copyWith(completed: value));
+          updateTodos();
         },
       ),
     );

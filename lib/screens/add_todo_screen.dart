@@ -2,9 +2,14 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sqflite_todos/models/todo_model.dart';
 import 'package:flutter_sqflite_todos/extensions/string_extension.dart';
+import 'package:flutter_sqflite_todos/services/database_service.dart';
 import 'package:intl/intl.dart';
 
 class AddTodoScreen extends StatefulWidget {
+  final VoidCallback updateTodos;
+
+  const AddTodoScreen({required this.updateTodos});
+
   @override
   _AddTodoScreenState createState() => _AddTodoScreenState();
 }
@@ -30,6 +35,13 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
     _nameController = TextEditingController(text: _todo!.name);
     _dateController =
         TextEditingController(text: DateFormat.MMMMEEEEd().format(_todo!.date));
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _dateController.dispose();
+    super.dispose();
   }
 
   @override
@@ -93,7 +105,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                 ),
                 const SizedBox(height: 32.0),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _submit,
                   style: ElevatedButton.styleFrom(
                     primary: Colors.green,
                     minimumSize: const Size.fromHeight(45.0),
@@ -117,5 +129,28 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
     );
   }
 
-  void _handleDatePicker() {}
+  Future<void> _handleDatePicker() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: _todo!.date,
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (date != null) {
+      _dateController.text = DateFormat.MMMMEEEEd().format(date);
+      setState(() => _todo = _todo!.copyWith(date: date));
+    }
+  }
+
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      DatabaseService.instance.insert(_todo!);
+
+      widget.updateTodos();
+
+      Navigator.of(context).pop();
+    }
+  }
 }
